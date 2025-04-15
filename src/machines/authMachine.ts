@@ -13,11 +13,7 @@ export interface AuthMachineSchema {
     updating: {};
     logout: {};
     refreshing: {};
-    google: {};
     authorized: {};
-    auth0: {};
-    cognito: {};
-    okta: {};
   };
 }
 
@@ -26,10 +22,6 @@ export type AuthMachineEvents =
   | { type: "LOGOUT" }
   | { type: "UPDATE" }
   | { type: "REFRESH" }
-  | { type: "AUTH0" }
-  | { type: "COGNITO" }
-  | { type: "OKTA" }
-  | { type: "GOOGLE" }
   | { type: "SIGNUP" };
 
 export interface AuthMachineContext {
@@ -51,10 +43,6 @@ export const authMachine = Machine<AuthMachineContext, AuthMachineSchema, AuthMa
         on: {
           LOGIN: "loading",
           SIGNUP: "signup",
-          GOOGLE: "google",
-          AUTH0: "auth0",
-          OKTA: "okta",
-          COGNITO: "cognito",
         },
       },
       signup: {
@@ -88,16 +76,6 @@ export const authMachine = Machine<AuthMachineContext, AuthMachineSchema, AuthMa
           LOGOUT: "logout",
         },
       },
-      google: {
-        invoke: {
-          src: "getGoogleUserProfile",
-          onDone: { target: "authorized", actions: "setUserProfile" },
-          onError: { target: "unauthorized", actions: "onError" },
-        },
-        on: {
-          LOGOUT: "logout",
-        },
-      },
       logout: {
         invoke: {
           src: "performLogout",
@@ -110,36 +88,6 @@ export const authMachine = Machine<AuthMachineContext, AuthMachineSchema, AuthMa
         on: {
           UPDATE: "updating",
           REFRESH: "refreshing",
-          LOGOUT: "logout",
-        },
-      },
-      auth0: {
-        invoke: {
-          src: "getAuth0UserProfile",
-          onDone: { target: "authorized", actions: "setUserProfile" },
-          onError: { target: "unauthorized", actions: "onError" },
-        },
-        on: {
-          LOGOUT: "logout",
-        },
-      },
-      okta: {
-        invoke: {
-          src: "getOktaUserProfile",
-          onDone: { target: "authorized", actions: "setUserProfile" },
-          onError: { target: "unauthorized", actions: "onError" },
-        },
-        on: {
-          LOGOUT: "logout",
-        },
-      },
-      cognito: {
-        invoke: {
-          src: "getCognitoUserProfile",
-          onDone: { target: "authorized", actions: "setUserProfile" },
-          onError: { target: "unauthorized", actions: "onError" },
-        },
-        on: {
           LOGOUT: "logout",
         },
       },
@@ -164,53 +112,9 @@ export const authMachine = Machine<AuthMachineContext, AuthMachineSchema, AuthMa
             throw new Error("Username or password is invalid");
           });
       },
-      getOktaUserProfile: /* istanbul ignore next */ (ctx, event: any) => {
-        // Map Okta User fields to our User Model
-        const user = {
-          id: event.user.sub,
-          email: event.user.email,
-          firstName: event.user.given_name,
-          lastName: event.user.family_name,
-          username: event.user.preferred_username,
-        };
-
-        // Set Access Token in Local Storage for API calls
-        localStorage.setItem(process.env.VITE_AUTH_TOKEN_NAME!, event.token);
-
-        return Promise.resolve({ user });
-      },
       getUserProfile: async (ctx, event) => {
         const resp = await httpClient.get(`http://localhost:${backendPort}/checkAuth`);
         return resp.data;
-      },
-      getGoogleUserProfile: /* istanbul ignore next */ (ctx, event: any) => {
-        // Map Google User fields to our User Model
-        const user = {
-          id: event.user.googleId,
-          email: event.user.email,
-          firstName: event.user.givenName,
-          lastName: event.user.familyName,
-          avatar: event.user.imageUrl,
-        };
-
-        // Set Google Access Token in Local Storage for API calls
-        localStorage.setItem(process.env.VITE_AUTH_TOKEN_NAME!, event.token);
-
-        return Promise.resolve({ user });
-      },
-      getAuth0UserProfile: /* istanbul ignore next */ (ctx, event: any) => {
-        // Map Auth0 User fields to our User Model
-        const user = {
-          id: event.user.sub,
-          email: event.user.email,
-          firstName: event.user.nickname,
-          avatar: event.user.picture,
-        };
-
-        // Set Auth0 Access Token in Local Storage for API calls
-        localStorage.setItem(process.env.VITE_AUTH_TOKEN_NAME!, event.token);
-
-        return Promise.resolve({ user });
       },
       updateProfile: async (ctx, event: any) => {
         const payload = omit("type", event);
@@ -223,18 +127,6 @@ export const authMachine = Machine<AuthMachineContext, AuthMachineSchema, AuthMa
       performLogout: async (ctx, event) => {
         localStorage.removeItem("authState");
         return await httpClient.post(`http://localhost:${backendPort}/logout`);
-      },
-      getCognitoUserProfile: /* istanbul ignore next */ (ctx, event: any) => {
-        // Map Cognito User fields to our User Model
-        const ourUser = {
-          id: event.userSub,
-          email: event.email,
-        };
-
-        // Set Access Token in Local Storage for API calls
-        localStorage.setItem(process.env.VITE_AUTH_TOKEN_NAME!, event.accessTokenJwtString);
-
-        return Promise.resolve(ourUser);
       },
     },
     actions: {
