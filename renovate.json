@@ -22,10 +22,6 @@
   "schedule": ["before 3am on the first day of the month"],
   "packageRules": [
     {
-      "packageNames": ["cypress"],
-      "schedule": ["every weekday"]
-    },
-    {
       "packageNames": ["babel-loader"],
       "allowedVersions": "8.0.6"
     },
@@ -91,11 +87,6 @@
     {
       "groupName": "AWS / Amplify",
       "matchPackageNames": ["@aws-amplify/ui-react", "aws-amplify"]
-    },
-    {
-      "groupName": "Testing / coverage",
-      "matchPackageNames": ["nyc", "istanbul-lib-coverage", "@percy/cypress"],
-      "matchPackagePatterns": ["^cypress/"]
     },
     {
       "groupName": "Misc FE libs",

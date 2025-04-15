@@ -25,13 +25,6 @@ const Root = styled("div")(({ theme }) => ({
   },
 }));
 
-// @ts-ignore
-if (window.Cypress) {
-  // Expose authService on window for Cypress
-  // @ts-ignore
-  window.authService = authService;
-}
-
 const App: React.FC = () => {
   const [authState] = useActor(authService);
   const [, , notificationsService] = useMachine(notificationsMachine);
