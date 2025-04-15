@@ -22,7 +22,6 @@ import commentRoutes from "./comment-routes";
 import notificationRoutes from "./notification-routes";
 import bankTransferRoutes from "./banktransfer-routes";
 import testDataRoutes from "./testdata-routes";
-import { ensureAuthenticated, validateMiddleware } from "./helpers";
 import resolvers from "./graphql/resolvers";
 import { frontendPort, getBackendPort } from "../src/utils/portUtils";
 
@@ -43,12 +42,6 @@ const schemaWithResolvers = addResolversToSchema({
 });
 
 const app = express();
-
-/* istanbul ignore next */
-// @ts-expect-error
-if (global.__coverage__) {
-  require("@cypress/code-coverage/middleware/express")(app);
-}
 
 app.use(cors(corsOption));
 app.use(logger("dev"));
