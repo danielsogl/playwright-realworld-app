@@ -127,34 +127,34 @@
     "vitest": "^0.33.0"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development concurrently yarn:start:react yarn:start:api:watch",
-    "start": "cross-env NODE_ENV=development concurrently yarn:start:react yarn:start:api",
-    "start:ci": "cross-env NODE_ENV=test concurrently yarn:start:react:proxy-server yarn:start:api",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run start:react\" \"npm run start:api:watch\"",
+    "start": "cross-env NODE_ENV=development concurrently \"npm run start:react\" \"npm run start:api\"",
+    "start:ci": "cross-env NODE_ENV=test concurrently \"npm run start:react:proxy-server\" \"npm run start:api\"",
     "start:react": "vite",
-    "start:empty": "cross-env NODE_ENV=development EMPTY_SEED=true concurrently yarn:start:react yarn:start:api:watch",
+    "start:empty": "cross-env NODE_ENV=development EMPTY_SEED=true concurrently \"npm run start:react\" \"npm run start:api:watch\"",
     "lint": "eslint && prettier --check \"**/**.{ts,js,tsx}\" \"*.{json,md,yml}\"",
     "list:dev:users": "cat data/database.json | json -a users | json -a id username",
     "types": "tsc --noEmit",
     "test:unit": "vitest",
     "test:unit:ci": "vitest --run",
-    "start:api": "yarn tsnode --files backend/app.ts",
-    "start:api:watch": "nodemon --exec yarn tsnode --watch 'backend' backend/app.ts",
-    "start:react:proxy-server": "yarn tsnode scripts/testServer.ts",
+    "start:api": "npm run tsnode -- --files backend/app.ts",
+    "start:api:watch": "nodemon --exec \"npm run tsnode --\" backend/app.ts",
+    "start:react:proxy-server": "npm run tsnode -- scripts/testServer.ts",
     "prettier": "prettier --write \"**/**.{ts,js,tsx}\" \"*.{json,md,yml}\"",
     "tsnode": "nyc --silent ts-node -P tsconfig.tsnode.json",
     "tsnode:not-instrumented": "ts-node -P tsconfig.tsnode.json",
-    "db:seed": "yarn tsnode scripts/generateSeedData",
+    "db:seed": "npm run tsnode -- scripts/generateSeedData",
     "db:seed:dev": "ncp ./data/database-seed.json ./data/database.json",
     "db:seed:empty": "ncp ./data/empty-seed.json ./data/database.json",
-    "postdb:seed": "yarn db:seed:dev",
-    "prestart": "yarn db:seed:dev",
-    "predev": "yarn db:seed:dev",
-    "prestart:empty": "yarn db:seed:empty",
-    "prebuild": "yarn types",
+    "postdb:seed": "npm run db:seed:dev",
+    "prestart": "npm run db:seed:dev",
+    "predev": "npm run db:seed:dev",
+    "prestart:empty": "npm run db:seed:empty",
+    "prebuild": "npm run types",
     "build:ci": "vite build",
     "build": "vite build",
-    "codesandbox:start:api": "yarn tsnode:not-instrumented --files backend/app.ts",
-    "codesandbox:start": "NODE_ENV=development TSC_COMPILE_ON_ERROR=true concurrently \"vite\" yarn:start:api:codesandbox",
+    "codesandbox:start:api": "npm run tsnode:not-instrumented -- --files backend/app.ts",
+    "codesandbox:start": "NODE_ENV=development TSC_COMPILE_ON_ERROR=true concurrently \"vite\" npm run start:api:codesandbox",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "test:playwright:coverage": "playwright test --coverage",
@@ -179,7 +179,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn types"
+      "pre-push": "npm run types"
     }
   },
   "browserslist": {
@@ -211,5 +211,12 @@
       "json"
     ]
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "overrides": {
+    "react-infinite-calendar": {
+      "react": "$react"
+    },
+    "@apollo/client": {
+      "react": "$react"
+    }
+  }
 }

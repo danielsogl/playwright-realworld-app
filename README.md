@@ -6,14 +6,7 @@ This is a demo application for Playwright workshops. It is a simple full-stack a
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (see `.node-version` for the required version)
-- [Yarn Classic](https://classic.yarnpkg.com/) (v1)
-
-#### Installing Yarn Classic
-If you don't have Yarn Classic installed, run:
-
-```sh
-npm install -g yarn@latest
-```
+- [npm](https://www.npmjs.com/) (comes with Node.js)
 
 ### Installation
 
@@ -22,13 +15,7 @@ Clone the repository and install dependencies:
 ```sh
 git clone https://github.com/danielsogl/playwright-realworld-app.git
 cd playwright-realworld-app
-yarn
-```
-
-If you are on a Mac with an M-series chip, use:
-
-```sh
-PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn install
+npm install
 ```
 
 ### Running the App
@@ -36,7 +23,7 @@ PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn install
 Start the backend and frontend:
 
 ```sh
-yarn dev
+npm run dev
 ```
 
 - Frontend: [http://localhost:3000](http://localhost:3000)
@@ -47,7 +34,7 @@ yarn dev
 After installing dependencies, make sure Playwright browsers are up to date:
 
 ```sh
-yarn playwright install
+npx playwright install
 ```
 
 If you ever need to update the browsers again, just rerun the above command.
@@ -56,6 +43,23 @@ If you ever need to update the browsers again, just rerun the above command.
 
 - Use any example user from `data/database.json`.
 - Default password for all users: `s3cret`
+
+### Running Playwright Tests
+
+You can run Playwright end-to-end tests with the following commands:
+
+- Run all tests in headless mode:
+  ```sh
+  npm run test:playwright
+  ```
+- Run tests in UI mode (for debugging):
+  ```sh
+  npm run test:playwright:ui
+  ```
+- Run tests with coverage:
+  ```sh
+  npm run test:playwright:coverage
+  ```
 
 ---
 
